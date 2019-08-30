@@ -1,7 +1,8 @@
-# Time series data - weather forecast using recurrent neural network
+# Weather forecast using recurrent neural network
 
 ## **Motivation**
-* Predict temperature of the next 12 or 24 hours 
+* Modulate time series data 
+* For example, predict temperature of the next 12 or 24 hours 
 
 ## **Requirements** 
 * Python (3.6.0)
