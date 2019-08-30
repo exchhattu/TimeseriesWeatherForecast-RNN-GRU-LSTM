@@ -2,9 +2,10 @@
 
 ## **Motivation**
 * Analyze time series data. Here, weather forecasting data was used. However 
-  with minimum modification the program can be used in the similar time
-  series data from different domains such as finance, and health care.
-* Here, since time series data was used, the goal is to predict temperature of the next 12 or 24 hours 
+  with minimal modification, the program can be used in the time series data from 
+  different domains such as finance or health care.
+* Here, since time series data for weather forecasting was tested, 
+  the goal is to predict temperature of the next 12 or 24 hours.
 
 ## **Requirements** 
 * Python (3.6.0)
@@ -16,9 +17,9 @@
 * Matplotlib and Seaborn
 
 ## **Directory Structure**
-- *src*: contains library and binary scripts. 
-- *notebook*: jupyter notebook for logs of optimized models 
-- *DLWP*: jupyter notebook of examples provided in the book 
+- __**src**__: contains library and binary scripts. 
+- __**notebook**__: jupyter notebook for logs of optimized models 
+- __**DLWP**__: jupyter notebook of examples provided in the book 
 
 ## **Usage** 
 
@@ -37,7 +38,7 @@ python3 ./src/GRU.py
 ```
 python3 ./src/GRU.py -e -i path/to/input  
 
-Options are same for both programs
+Options are same for both programs.
 
 -i: path to input file.
 -p: hour for prediction (default:24) 
