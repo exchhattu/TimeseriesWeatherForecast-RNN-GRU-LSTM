@@ -2,33 +2,35 @@
 
 ## **Motivation**
 * Analyze time series data. Here, weather forecasting data was used. However 
-  with minimal modification, the program can be used in the time series data from 
-  different domains such as finance or health care.
+  with minimal modification, __the program can be used in the time series data from 
+  different domains such as finance or health care__.
 * Here, since time series data for weather forecasting was tested, 
   the goal is to predict temperature of the next 12 or 24 hours.
+* Compare mean square error and mean absolute error as loss function
 
 ## **Requirements** 
 * Python (3.6.0)
 * Pandas ()
-* numpy (1.16.0)
-* keras (2.2.4) 
+* Numpy (1.16.0)
+* Keras (2.2.4) 
 * Tensorflow (1.13.1)
 * Juypter ()
 * Matplotlib and Seaborn
 
 ## **Directory Structure**
-- __**src**__: contains library and binary scripts. 
-- __**notebook**__: jupyter notebook for logs of optimized models 
-- __**DLWP**__: jupyter notebook of examples provided in the book 
+- __src__: contains scripts for library and binary. 
+- __notebooks__: jupyter notebooks for log of optimized models 
+- __DLWP__: jupyter notebooks of the examples provided in the book and some other
+  comparison tests. 
 
 ## **Usage** 
 
-* LSTM layer
+* Long Short Term Memory 
 ```
 python3 ./src/LSTM.py 
 ```
 
-* GRU layer
+* Gated Recurrent Unit 
 ```
 python3 ./src/GRU.py 
 ```
@@ -46,89 +48,75 @@ Options are same for both programs.
 -d: incorporate encoded features (default: False)  
 ```
 
-## **Summary**
-* Repeating an example provided for gated recurrent model (GRU) with dropout layer described in
-  [Deep Learning with Python](https://bit.ly/346tOkH), the error of [0.27](https://bit.ly/2ZCPkOE)
-  where training and validation losses meet after 20 epochs, was the lowest
-  mean square error. The model showed similar performance on test dataset.
+## **Updated Summary**
+* An example provided for gated recurrent unit (GRU) in [Deep Learning with Python](https://bit.ly/346tOkH)
+  was repeated. The Mean absolute error (MAE) of [0.27](https://bit.ly/2ZCPkOE) was the lowest while 
+  generating a model. This error was yielded at 20 epoch on validation dataset. 
+  The model showed similar performance on test dataset. When loss function was changed from 
+  [MAE to MSE]() (mean square error), the best performance was 0.13 MSE on test dataset.  
+  Although lower bound of these two metrics is same (0.00), which implies the prediction result exactly 
+  recaptiualte actual data, they grow differently. Therefore, the absoulte number for two metrics cannot 
+  be comparable. 
 
-* [Long short-term memory(LSTM)](https://bit.ly/2ZphayP) 
-  was also tested by replacing GRU; however, the performance did not change.
+* [Long short-term memory(LSTM)](https://bit.ly/2ZphayP) was also tested by replacing GRU
+  with two MSE and MAE ; however, the performance did not change.
 
 * Add-in: 
-  I further explored to optimize a model to avoid overfitting.  I mainly focus on the 
-  few things, which are listed below:
+  I further explored to optimize a model to avoid overfitting in which MSE was 
+  used as loss function for all cases. I mainly focus on the few things, which 
+  are listed below:
 
-   1. Data preparation:
-      Around half million data was included for the model buiding and testing. These data were
+   1. Data preparation
+      Around half million data was included for the experiment. These data were
       divided into train, validation, and test group in 8:1:1 ratio.
 
-   2. Parameter selection:
+   2. Parameter selection
       The number of offset data (prior) taken from current time was
-      modified. Similarly, step size used to avoid the continuous
-      consideration of data selection was modified. Although 24 hours
-      prediction was tested as used in the book, the model showed the best
-      performance while testing for 12 hours. Others prediction can also be tested.
-
-   3. Incorporate temporal data:
+      changed. Similarly, step size introduced to select the data was also 
+      modified. 
+      
+   3. Incorporate temporal data
       Temporal information was excluded in the example shown in the book. However,
       this information was incorporated in two different ways. First, day,
-      month, and time were converted into numerical data in such a way that January
+      month, and time were converted into numerical values in such a way that January
       and December are close to each other. Second, using embedded layer from
       Keras, four columns - year, month, day, and time were embedded and
       concatenated with numeric attributes.
 
-   4. Design new model:
-      Since GRU with multiple layers showed the best performance in the book,
-      I used similar model with different dropout schemes. 
-
-## **Performance**
+## **Methods and Performances**
    - Configuration: 20 epochs with 200 steps/epoch with 0.03 dropouts and recurrent dropouts
-   - Features:
-      * Default feature indicates 14 different attributes that have numerical
-        value.
-      * -e indicates embedded features that were combined with 14 attributes.
+   - Feature Definition:
+      * Default feature indicates 14 different attributes that have numerical values.
+      * -e in program indicates embedded features that were combined with 14 attributes.
         They are Day, month, year, and time.
-      * -d refers the inclusion of encoded day, month, and time with 14
+      * -d in program refers the inclusion of encoded day, month, and time with 14
         attributes. For example, month is encoded in such a way that January and 
         December are very close to each other.
+   - Among the tested models, stacking with default and embedded
+     features for GRU and LSTM were selected. 
 
    - 24 hours (default) weather prediction summary
-     * GRU and LSTM with three different features were tested.
-       They yielded mean square error (MSE) of 0.12 on test dataset.
-     * In addition, multiple layers of GRU and LSTM also achieve similar
-       performance. These two models with [embedded feature](https://bit.ly/2zuTkSD)
-       were selected to check trend of loss function.
+      * Four models, two for GRU and two for LSTM, with default and embedded features yielded 
+        similar mean square error (MSE) of 0.12 on test dataset. [Loss function of epoch
+        for GRU and LSTM with default and embedded features](https://bit.ly/2zuTkSD) were plotted. 
 
    - [Models](https://bit.ly/30LqDgj) for 12 hours prediction
-     * Among the previously tested models, LSTM models with embedded and default features with stacking layers
-       were selected. Using similar configuration, the model was generated to predict 12 hours' weather. The
-       model that included default and embedded features yielded better performance of 0.09 mean squared error.
-       This is slightly improved over the same model generated for 24 hours' prediction.
-       However, there is no performance improvement (0.12 MSE) for 12 hour's weather prediction over 24 hour's
-       when only default feature with similar configuration was used.
+      * Using similar configuration, the model was generated to predict 12 hours' weather using similar
+        parameters. The model that included embedded features yielded better performance of 
+        0.09 mean squared error. This is slightly improved over the same model generated for 24 hours' 
+        prediction. However, there is no performance improvement (0.12 MSE) for 12 hour's weather prediction 
+        over 24 hour's when only default feature with similar configuration was used.
 
-       If you downloaded jena_climate_2009_2016.csv in data directory, run the following
-       command
-
-       ```
-       $ python3 ./src/LSTM.py -e -i ./data/jena_climate_2009_2016.csv -p 12
-       ```
-     * Similar experiments were also carried out to generated model using GRU.
-       Two models yielded 0.09 and 0.10 mean square error with embedded and
-       default features respectively.
-       ```
-       $ python3 ./src/GRU.py -e -i ./data/jena_climate_2009_2016.csv -p 12
-       ```
-
+      * Similar experiments were also carried out to generated model using GRU.
+        Two models yielded 0.09 and 0.10 mean square error with embedded and
+        default features respectively.
 
 ## **Future Direction**
   - The behavior of time series data is highly stocastic, which increases the
-    uncertanity in finding a pattern in the data. Nonetheless, recent improvement
-    in machine learning algorithm can improves the level of uncertainity and
-    provide prediction level with confidence.
-  - I personally interested to explore multiple parameters and different models in order to
+    uncertanity in finding a pattern in the data. Nonetheless, recent
+    advancement in machine learning algorithm such as deep learning can improve 
+    the prediction performance with confidence.
+  - I am interested to explore multiple parameters and different models in order to
     optimize the model to yield better performance in the availability of
-    computing resources.
-  - Moreover, my idea is to expand the utility of a program to employ in the similar time
-    series data from different domains.
+    computing resources. Moreover, my idea is to expand the utility of a program to 
+    employ in the similar time series data from different domains.
