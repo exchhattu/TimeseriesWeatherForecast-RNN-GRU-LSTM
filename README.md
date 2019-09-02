@@ -4,8 +4,8 @@
 * Analyze time series data. Here, weather forecasting data was used. However 
   with minimal modification, __the program can be used in the time series data from 
   different domains such as finance or health care__.
-* Here, since time series data for weather forecasting was tested, 
-  the goal is to predict temperature of the next 12 or 24 hours.
+* The goal is to predict temperature of the next 12 or 24 hours
+  as time series data for weather forecasting was tested. 
 * Compare mean square error and mean absolute error as loss function
 
 ## **Requirements** 
@@ -18,9 +18,9 @@
 * Matplotlib and Seaborn
 
 ## **Directory Structure**
-- __src__: contains scripts for library and binary. 
-- __notebooks__: jupyter notebooks for log of optimized models 
-- __DLWP__: jupyter notebooks of the examples provided in the book and some other
+- __src__: contains scripts for library and binary
+- __notebooks__: jupyter notebooks of optimized models 
+- __DLWP__: jupyter notebooks of the examples provided in the book and other
   comparison tests. 
 
 ## **Usage** 
@@ -36,8 +36,9 @@ python3 ./src/GRU.py
 ```
 
 * Example
-  - Run GRU layer with embedded features  
 ```
+Run GRU layer with embedded feature
+
 python3 ./src/GRU.py -e -i path/to/input  
 
 Options are same for both programs.
@@ -50,16 +51,17 @@ Options are same for both programs.
 
 ## **Updated Summary**
 * An example provided for gated recurrent unit (GRU) in [Deep Learning with Python](https://bit.ly/346tOkH)
-  was repeated. The Mean absolute error (MAE) of [0.27](https://bit.ly/2ZCPkOE) was the lowest while 
-  generating a model. This error was yielded at 20 epoch on validation dataset. 
-  The model showed similar performance on test dataset. When loss function was changed from 
-  [MAE to MSE]() (mean square error), the best performance was 0.13 MSE on test dataset.  
-  Although lower bound of these two metrics is same (0.00), which implies the prediction result exactly 
-  recaptiualte actual data, they grow differently. Therefore, the absoulte number for two metrics cannot 
-  be comparable. 
+  was repeated. The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was the lowest while 
+  generating a model with dropout scheme. This error was yielded at 30 epoch on validation dataset. 
+  Afterward, both functions are converged. The model showed similar performance on test dataset. 
+  When loss function was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), the best performance was 
+  0.13 MSE on validation and test dataset in same scheme. However, model was converged earlier at 22 epoch.  Although 
+  both metrics can recaptiulate the acutal data with score of 0.00, they grow differently. 
 
-* [Long short-term memory(LSTM)](https://bit.ly/2ZphayP) was also tested by replacing GRU
-  with two MSE and MAE ; however, the performance did not change.
+* Long short-term memory(LSTM) was also tested by replacing GRU
+  with [MAE](https://bit.ly/2lUMEd8) and [MSE](https://bit.ly/2jTdaTq) respectively. 
+  However, the performance slight decreased and the trend of loss functions 
+  were differed compared with its GRU counterpart.
 
 * Add-in: 
   I further explored to optimize a model to avoid overfitting in which MSE was 
