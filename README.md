@@ -14,8 +14,8 @@
 * Numpy (1.16.0)
 * Keras (2.2.4) 
 * Tensorflow (1.13.1)
-* Juypter ()
-* Matplotlib and Seaborn
+* Jupyter (4.4.0)
+* Matplotlib (3.0.2) and Seaborn (0.9.0)
 
 ## **Directory Structure**
 - __src__: contains scripts for library and binary
