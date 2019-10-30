@@ -52,36 +52,33 @@ Options are same for both programs.
 ## **Updated Summary**
 
 * An example provided for a gated recurrent unit (GRU) in [Deep Learning with Python](https://bit.ly/346tOkH)
-  was repeated. The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was 
-  the lowest while generating a model with the dropout scheme. This error was yielded at 
-  30 epoch on the validation dataset. Afterward, both functions are converged. The model 
-  showed similar performance on the test dataset. When loss function was changed from 
-  [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), the best performance was 0.13 
-  MSE on validation and test dataset in the same scheme. However, the model was converged at 22 epoch or earlier. 
-
+ was repeated. The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was the lowest while generating 
+ a model with the dropout scheme. This error was yielded at 30 epoch on the validation dataset.
+ Afterward, both functions are converged. The model showed similar performance on the test dataset.
+ When loss function was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
+ the best performance was 0.13 MSE on validation and test dataset in the same scheme. 
+ However, the model was converged at 22 epoch or earlier. 
 * Long short-term memory(LSTM) was also tested by replacing GRU with [MAE](https://bit.ly/2lUMEd8) 
   and [MSE](https://bit.ly/2jTdaTq) respectively. However, the performance slight decreased and 
   the trend of loss functions was differed compared with its GRU counterpart.
 
 * Add-in:
-  I further explored to optimize a model to avoid overfitting in which MSE was used as the 
-  loss function for all cases. I mainly focus on the few things, which are listed below:
+ I further explored to optimize a model to avoid overfitting in which MSE was used as the loss function for all cases. 
+ I mainly focus on the few things, which are listed below:
+ 1. Data preparation
+   Around half a million data was included in the experiment. These data were divided into train, 
+   validation, and test group in 8:1:1 ratio.
 
-  1. Data preparation
-  Around half a million data was included in the experiment. These data were 
-  divided into train, validation, and test group in 8:1:1 ratio.
+ 2. Parameter selection
+   The number of offset data (prior) taken from the current time was changed. 
+   Similarly, the step size introduced to select the data was also modified.
 
-  2. Parameter selection
-  The number of offset data (prior) taken from the current time was changed. 
-  Similarly, the step size introduced to select the data was also modified.
-
-  3. Incorporate temporal data
-  Temporal information was excluded in the example shown in the book. 
-  However, this information was incorporated in two different ways. 
-  First, day, month, and time were converted into numerical values in such a way 
-  that January and December are close to each other. Second, using an embedded layer 
-  from Keras, four columns - year, month, day, and time were embedded and concatenated 
-  with numeric attributes.
+ 3. Incorporate temporal data
+   Temporal information was excluded in the example shown in the book. 
+   However, this information was incorporated in two different ways. 
+   First, day, month, and time were converted into numerical values in such a way that January and December 
+   are close to each other. Second, using an embedded layer from Keras, four columns - year, month, day, 
+   and time were embedded and concatenated with numeric attributes.
 
 ## **Methods and Performances**
   - Configuration: 20 epochs with 200 steps/epoch with 0.03 dropouts and recurrent dropouts
