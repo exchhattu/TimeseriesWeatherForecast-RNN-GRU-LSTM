@@ -65,44 +65,44 @@ Options are same for both programs.
 * Add-in:
  I further explored to optimize a model to avoid overfitting in which MSE was used as the loss function for all cases. 
  I mainly focus on the few things, which are listed below:
- 1. Data preparation
-   Around half a million data was included in the experiment. These data were divided into train, 
-   validation, and test group in 8:1:1 ratio.
+   1. Data preparation
+     Around half a million data was included in the experiment. These data were divided into train, 
+     validation, and test group in 8:1:1 ratio.
 
- 2. Parameter selection
-   The number of offset data (prior) taken from the current time was changed. 
-   Similarly, the step size introduced to select the data was also modified.
+   2. Parameter selection
+     The number of offset data (prior) taken from the current time was changed. 
+     Similarly, the step size introduced to select the data was also modified.
 
- 3. Incorporate temporal data
-   Temporal information was excluded in the example shown in the book. 
-   However, this information was incorporated in two different ways. 
-   First, day, month, and time were converted into numerical values in such a way that January and December 
-   are close to each other. Second, using an embedded layer from Keras, four columns - year, month, day, 
-   and time were embedded and concatenated with numeric attributes.
+   3. Incorporate temporal data
+     Temporal information was excluded in the example shown in the book. 
+     However, this information was incorporated in two different ways. 
+     First, day, month, and time were converted into numerical values in such a way that January and December 
+     are close to each other. Second, using an embedded layer from Keras, four columns - year, month, day, 
+     and time were embedded and concatenated with numeric attributes.
 
 ## **Methods and Performances**
   - Configuration: 20 epochs with 200 steps/epoch with 0.03 dropouts and recurrent dropouts
   - Feature Definition:
-   * Default feature indicates 14 different attributes that have numerical values.
-   * -e in the program indicates embedded features that were combined with 14 attributes.
-    They are Day, month, year, and time.
-   * -d in the program refers to the inclusion of encoded day, month, and time with 14 attributes. 
-     For example, a month is encoded in such a way that January and December are very close to each other.
+    * Default feature indicates 14 different attributes that have numerical values.
+    * -e in the program indicates embedded features that were combined with 14 attributes.
+     They are Day, month, year, and time.
+    * -d in the program refers to the inclusion of encoded day, month, and time with 14 attributes. 
+      For example, a month is encoded in such a way that January and December are very close to each other.
   - Among the tested models, the stacking layer with the default and embedded features for GRU and LSTM were selected.
   - 24 hours (default) weather prediction summary
-   * Four models, two for GRU and two for LSTM, with the default and embedded features, 
-     yielded similar mean square error (MSE) of 0.12 on the test dataset. 
-     [Loss function of epoch for GRU and LSTM with the default and embedded features](https://bit.ly/2zuTkSD) were plotted.
+    * Four models, two for GRU and two for LSTM, with the default and embedded features, 
+      yielded similar mean square error (MSE) of 0.12 on the test dataset. 
+      [Loss function of epoch for GRU and LSTM with the default and embedded features](https://bit.ly/2zuTkSD) were plotted.
 
   - [Models](https://bit.ly/30LqDgj) for 12 hours prediction
-   * Using similar configuration, the model was generated to predict 12 hours' weather using similar 
-     parameters. The model that included embedded features yielded a better performance of 0.09 
-     mean squared error. This is slightly improved over the same model generated for 24 hours'
-    prediction. However, there is no performance improvement (0.12 MSE) for 12 hour's weather prediction 
-    over 24 hour's when only the default feature with a similar configuration was used.
+    * Using similar configuration, the model was generated to predict 12 hours' weather using similar 
+      parameters. The model that included embedded features yielded a better performance of 0.09 
+      mean squared error. This is slightly improved over the same model generated for 24 hours'
+     prediction. However, there is no performance improvement (0.12 MSE) for 12 hour's weather prediction 
+     over 24 hour's when only the default feature with a similar configuration was used.
 
-   * Similar experiments were also carried out to generated models using GRU. Two models yielded 0.09 
-     and 0.10 mean square error with embedded and default features respectively.
+    * Similar experiments were also carried out to generated models using GRU. Two models yielded 0.09 
+      and 0.10 mean square error with embedded and default features respectively.
 
 ## **Future Direction**
   - The behavior of time series data is highly stochastic, which increases the uncertainty in finding 
