@@ -10,7 +10,7 @@
 
 ## **Requirements** 
 * Python (3.6.0)
-* Pandas ()
+* Pandas (0.24.1)
 * Numpy (1.16.0)
 * Keras (2.2.4) 
 * Tensorflow (1.13.1)
