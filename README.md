@@ -81,7 +81,7 @@ Options are same for both programs.
      and time were embedded and concatenated with numeric attributes.
 
 ## **Methods and Performances**
-  - Configuration: 20 epochs with 200 steps/epoch with 0.03 dropouts and recurrent dropouts
+  - Configuration: 20 epochs with 200 steps/epoch, 0.03 dropouts and recurrent dropouts
   - Feature Definition:
     * Default feature indicates 14 different attributes that have numerical values.
     * -e in the program indicates embedded features that were combined with 14 attributes.
