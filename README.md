@@ -111,3 +111,9 @@ Options are same for both programs.
   - I am interested to explore multiple parameters in order to optimize the model 
     to yield better performance in the availability of computing resources. Moreover, my idea is to 
     expand the utility of a program to employ the similar time-series data from different domains.
+
+## Disclamier
+Opinions expressed are solely my own and do not express the views or opinions of my employer. 
+The author assumes no responsibility or liability for any errors or omissions in the content of this site. 
+The information contained in this site is provided on an “as is” basis with no guarantees of completeness, 
+accuracy, usefulness or timeliness.
