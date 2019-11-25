@@ -89,12 +89,12 @@ Options are same for both programs.
     * -d in the program refers to the inclusion of encoded day, month, and time with 14 attributes. 
       For example, a month is encoded in such a way that January and December are very close to each other.
   - Among the tested models, the stacking layer with the default and embedded features for GRU and LSTM were selected.
-  - 24 hours (default) weather prediction summary
+  - Temperature prediction of [24 hours](https://github.com/exchhattu/TimeseriesWeatherForecast-RNN-GRU-LSTM/blob/master/notebooks/OptimizedModel_default.ipynb) 
     * Four models, two for GRU and two for LSTM, with the default and embedded features, 
       yielded similar mean square error (MSE) of 0.12 on the test dataset. 
-      [Loss function of epoch for GRU and LSTM with the default and embedded features](https://bit.ly/2zuTkSD) were plotted.
+      Loss function of epoch for GRU and LSTM with the default and embedded features were plotted.
 
-  - [Models](https://bit.ly/30LqDgj) for 12 hours prediction
+  - Models for forecasting temperature of next [12 hours](https://github.com/exchhattu/TimeseriesWeatherForecast-RNN-GRU-LSTM/blob/master/notebooks/OptimizedModel_12hrs.ipynb) 
     * Using similar configuration, the model was generated to predict 12 hours' weather using similar 
       parameters. The model that included embedded features yielded a better performance of 0.09 
       mean squared error. This is slightly improved over the same model generated for 24 hours'
