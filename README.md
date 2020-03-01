@@ -56,11 +56,14 @@ Options are same for both programs.
  a model with the dropout scheme. This error was yielded at 30 epoch on the validation dataset.
  Afterward, both functions are converged. The model showed similar performance on the test dataset.
  When assessment was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
- the best performance was 0.13 MSE on validation and test dataset in the same scheme. 
- However, the model was converged at 22 epoch or earlier. 
-* Long short-term memory(LSTM) was also tested by replacing GRU with [MAE](https://bit.ly/2lUMEd8) 
+ the best performance was 0.13 MSE (0.36 RMSE) (almost equal to MAE) on validation and test dataset in the same scheme. 
+ However, the model was converged at 22 epoch or earlier. This indicates there
+ is no effect of outlier and therfore, MSE is used for further analysis since it is easy to compute due to its L2 norm.
+
+* Similarly, long short-term memory(LSTM) was also tested by replacing GRU with [MAE](https://bit.ly/2lUMEd8) 
   and [MSE](https://bit.ly/2jTdaTq) respectively. However, the performance slight decreased and 
-  was differed compared with its GRU counterpart.
+  was differed compared with its GRU counterpart. But there is no change 
+  for selection of loss functions. Thus, further analysis is only with MSE.
 
 * Add-in:
  I further explored to optimize a model to avoid overfitting in which MSE was used for all cases. 
