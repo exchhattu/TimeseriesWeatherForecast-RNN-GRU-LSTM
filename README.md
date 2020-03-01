@@ -56,7 +56,7 @@ Options are same for both programs.
  a model with the dropout scheme. This error was yielded at 30 epoch on the validation dataset.
  Afterward, both functions are converged. The model showed similar performance on the test dataset.
  When assessment was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
- the best performance was 0.13 MSE (0.36 RMSE) (almost equal to MAE) on validation and test dataset in the same scheme. 
+ the best performance was 0.13 MSE (0.36 RMSE and almost equal to MAE) on validation and test dataset in the same scheme. 
  However, the model was converged at 22 epoch or earlier. This indicates there
  is no effect of outlier and therfore, MSE is used for further analysis since it is easy to compute due to its L2 norm.
 
