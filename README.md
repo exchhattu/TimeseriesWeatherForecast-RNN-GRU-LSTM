@@ -51,8 +51,8 @@ Options are same for both programs.
 
 ## **Updated Summary**
 
-* An example provided for a gated recurrent unit (GRU) in [Deep Learning with Python](https://bit.ly/346tOkH)
- was repeated. The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was the lowest while generating 
+* First, model with gated recurrent unit (GRU) was implemented and tested. 
+ The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was the lowest while generating 
  a model with the dropout scheme. This error was yielded at 30 epoch on the validation dataset.
  Afterward, both functions are converged. The model showed similar performance on the test dataset.
  When assessment was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
