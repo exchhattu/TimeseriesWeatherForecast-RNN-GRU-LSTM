@@ -6,7 +6,7 @@
   different domains such as finance or health care__.
 * The goal is to predict temperature of the next 12 or 24 hours
   as time series data for weather forecasting was tested. 
-* Compare mean square error and mean absolute error as loss function
+* Compare performance using mean square error and mean absolute error 
 
 ## **Requirements** 
 * Python (3.6.0)
@@ -55,15 +55,15 @@ Options are same for both programs.
  was repeated. The mean absolute error (MAE) of [0.30](https://bit.ly/2kqrO4K) was the lowest while generating 
  a model with the dropout scheme. This error was yielded at 30 epoch on the validation dataset.
  Afterward, both functions are converged. The model showed similar performance on the test dataset.
- When loss function was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
+ When assessment was changed from [MAE to MSE](https://bit.ly/2kfketZ) (mean square error), 
  the best performance was 0.13 MSE on validation and test dataset in the same scheme. 
  However, the model was converged at 22 epoch or earlier. 
 * Long short-term memory(LSTM) was also tested by replacing GRU with [MAE](https://bit.ly/2lUMEd8) 
   and [MSE](https://bit.ly/2jTdaTq) respectively. However, the performance slight decreased and 
-  the trend of loss functions was differed compared with its GRU counterpart.
+  was differed compared with its GRU counterpart.
 
 * Add-in:
- I further explored to optimize a model to avoid overfitting in which MSE was used as the loss function for all cases. 
+ I further explored to optimize a model to avoid overfitting in which MSE was used for all cases. 
  I mainly focus on the few things, which are listed below:
    1. Data preparation
      Around half a million data was included in the experiment. These data were divided into train, 
@@ -92,7 +92,7 @@ Options are same for both programs.
   - Temperature prediction of [24 hours](https://github.com/exchhattu/TimeseriesWeatherForecast-RNN-GRU-LSTM/blob/master/notebooks/OptimizedModel_default.ipynb) 
     * Four models, two for GRU and two for LSTM, with the default and embedded features, 
       yielded similar mean square error (MSE) of 0.12 on the test dataset. 
-      Loss function of epoch for GRU and LSTM with the default and embedded features were plotted.
+      Loss was plotted as function of the number of epoch for GRU and LSTM with the default and embedded features.
 
   - Models for forecasting temperature of next [12 hours](https://github.com/exchhattu/TimeseriesWeatherForecast-RNN-GRU-LSTM/blob/master/notebooks/OptimizedModel_12hrs.ipynb) 
     * Using similar configuration, the model was generated to predict 12 hours' weather using similar 
