@@ -1,7 +1,7 @@
 # Weather forecast using recurrent neural network
 
 ## **Motivation**
-* Analyze time series data. Here, weather forecasting data was used. However 
+* Analsis of time series data. Here, weather forecasting data was used. However 
   with minimal modification, __the program can be used in the time series data from 
   different domains such as finance or health care__.
 * The goal is to predict temperature of the next 12 or 24 hours
