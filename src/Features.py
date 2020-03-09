@@ -3,25 +3,32 @@
 import pandas as pd
 import numpy as np 
 
-
 from sklearn.preprocessing import StandardScaler
 
 class DataProcess:
 
   def __init__(self, fo_train_ratio, fo_valid_ratio, fo_test_ratio):
+    """ Percentage of train, testing, and validation """
+
     self._fo_train_ratio = fo_train_ratio
     self._fo_valid_ratio = fo_valid_ratio
     self._fo_test_ratio  = fo_test_ratio
 
   def convert_time_to_minute(self, st_row):
+    """ Convert time into minute"""
     ar_hr_mi_se = st_row.split(":")
     return int(ar_hr_mi_se[0]) * 60 + int(ar_hr_mi_se[1])
 
   def convert_time_to_hours(self, st_row):
+    """ Convert time into hour"""
     ar_hr_mi_se = st_row.split(":")
     return int(ar_hr_mi_se[0]) + int(ar_hr_mi_se[1])/60.0
 
   def get_xy(self, st_row, fo_max_value = 360.0):
+    """ 
+    Convert time into polar coordinate system. This converts 12pm at noon 
+    and 1am in the morning are close to each other. 
+    """
     ar_hr_mi_se = st_row.split(":")
     fo_hrs = (float(ar_hr_mi_se[0])*60.0 + float(ar_hr_mi_se[1])) / fo_max_value
     fo_r = fo_max_value/(2.0*np.pi)
@@ -30,20 +37,18 @@ class DataProcess:
     return pd.Series([fo_x, fo_y])
 
   def get_month_xy(self, st_row, fo_max_value = 12.0):
+    """ This coversion makes january and december are consecutive.
+    Therefore, forecasting for these months are very similar.
+    """
     fo_month = float(st_row) / fo_max_value
-
     fo_r = fo_max_value/(2.0*np.pi)
     fo_x = fo_r * np.sin(2.0*np.pi*fo_month)
     fo_y = fo_r * np.cos(2.0*np.pi*fo_month)
     return pd.Series([fo_x, fo_y])
 
   def get_day_xy(self, st_row, fo_max_value = 365.0):
-    """
-      Aims: convert 365 days to x, y coordinates but 31 days/month is rough approximation.
-      Parameters:
-        st_row:
-        fo_max_value:
-    """
+    """ Convert 365 days to x, y coordinates but 31 days/month is rough approximation """
+
     ar_dd_mo_yy = st_row.split("-") # dd/mo/yy
     fo_day = (float(ar_dd_mo_yy[0]) + 31.0*(float(ar_dd_mo_yy[1])-1.0)) / fo_max_value
 
@@ -53,6 +58,7 @@ class DataProcess:
     return pd.Series([fo_x, fo_y])
 
   def encode_month(self, st_row):
+    """Encode the month into four categories based on their seasonal preference.""""
     if st_row == 1 or st_row == 2 or st_row == 12:
       return 1
     if st_row == 3 or st_row == 11:
@@ -63,6 +69,7 @@ class DataProcess:
       return 4
 
   def encode_hours(self, st_row):
+    """Encode 24 hours into six categories""""
     st_row = int(self.convert_time_to_hours(st_row))
     if st_row in range(4):
       return 1
@@ -78,11 +85,12 @@ class DataProcess:
       return 6
 
   def parse_excluded_columns(self, st_column_idxes):
-    ''' Aims: 
+    """ 
+        Aims: 
             Parsing the column indexes that should be excluded.
         Params:
             st_column_idxes: formats can be 1,2,3 or 1,2-5, or 2-5
-    '''
+    """ 
     ts_col_idxes = []
     ts_comma = st_column_idxes.split(",") 
     for st_comma in ts_comma:
@@ -123,15 +131,8 @@ class DataProcess:
       self._df_data[['Tx', 'Ty']]   = self._df_data['Date Time'].dt.time.astype(str).apply(lambda row: self.get_xy(row, 24.0))
       self._df_data[['Mx', 'My']]   = self._df_data['Date Time'].dt.month.astype(str).apply(lambda row: self.get_month_xy(row, 12.0))
       self._df_data[['Dx', 'Dy']]   = self._df_data['Date Time'].dt.date.astype(str).apply(lambda row: self.get_day_xy(row, 372.0))
-     
-      ## # # Create new attributes by summing relevant features 
-      ## self._df_data['Txy'] = self._df_data['Tx'] +  self._df_data['Ty']
-      ## self._df_data['Mxy'] = self._df_data['Mx'] +  self._df_data['My']
-      ## self._df_data['Dxy'] = self._df_data['Dx'] +  self._df_data['Dy']
-
-      # self._df_data.drop(['Year', 'Month', 'Day', 'Time'], axis=1, inplace=True)
-      ## self._df_data.drop(['Tx', 'Ty', 'Mx', 'My', 'Dx', 'Dy'], axis=1, inplace=True)
       print("INFO: encoded!!!")
+
     if use_embedded_date: # donot modify but just split
       # Extracting year, month, day and hour  
       self._df_data['Year']     = self._df_data['Date Time'].dt.year 
@@ -188,7 +189,9 @@ class DataProcess:
     """
     Aims: 
      - identify the outlier of each feature with numeric value 
-     - three std from mean is considered as outlier
+     - three std from mean is considered as outlier since the random 
+       variables follow normal distribution. Can be utilized other techniques
+       such IQR and clustering.
      - update the outlier values with respective mean observed from training 
        dataset
     Parameters:
