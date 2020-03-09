@@ -15,14 +15,23 @@ from Features import DataProcess
 class RecurrentModel(DataProcess):
 
   def __init__(self, fo_train_ratio, fo_valid_ratio, fo_test_ratio, 
-               in_back_offset=2016, in_forward_offset=72, in_step=6, in_batch_size=128):
+               in_back_offset=2016, in_forward_offset=72, in_step=6, 
+               in_batch_size=128):
+    """
+    setup hyperparameters and other parameters used in preprocessing of data.  
+    """
     super().__init__(fo_train_ratio, fo_valid_ratio, fo_test_ratio)
     self._in_back_offset    = in_back_offset 
     self._in_forward_offset = in_forward_offset 
     self._in_step           = in_step 
     self._in_batch_size     = in_batch_size 
 
-  def data_generator(self, in_min_idx=0, in_max_idx=120000, in_batch_size=128, random=True, valid="a"):
+  def data_generator(self, in_min_idx=0, in_max_idx=120000, in_batch_size=128, random=True, valid="Test"):
+    """ 
+    data generation for batch. Order is maintained since future information cannot be used 
+    to predict past activity.
+    """
+
     if in_max_idx is None: in_max_idx = self._ar_values.shape[0] - self._in_back_offset - 1
     in_idx      = in_min_idx + self._in_back_offset
     in_b_dim    = self._in_back_offset//self._in_step
@@ -56,9 +65,12 @@ class RecurrentModel(DataProcess):
       print("DEBUG: ar_Y min ", ar_Y.min())
       print("DEBUG: ar_Y max ", ar_Y.max())
       """
-      yield ar_X_f, ar_Y #.ravel() 
+      yield ar_X_f, ar_Y 
 
   def fit_standard_scalar(self): 
+    """
+    Normalized the train data and used same paramters for test data.
+    """
     in_num_sample   = int(self._fo_train_ratio * self._ar_values.shape[0]) 
     ar_mean = self._ar_values[:in_num_sample, self._ts_num_idxes].astype(np.float64).mean(axis=0) 
     self._ar_values[:, self._ts_num_idxes] -= ar_mean 
@@ -67,7 +79,10 @@ class RecurrentModel(DataProcess):
 
     print(self._in_target_idx)
  
-  def merge_data_generator(self, in_min_idx=0, in_max_idx=120000, in_batch_size=128, random=False, valid="a"):
+  def merge_data_generator(self, in_min_idx=0, in_max_idx=120000, in_batch_size=128, random=False, valid="test"):
+    """
+    merged multiple columns after converting each column (string) to create final tensor 
+    """
     self._ar_test = []
     if in_max_idx is None: in_max_idx = self._ar_values.shape[0] - self._in_back_offset - 1 # self._in_forward_offset - 1
     in_idx      = in_min_idx + self._in_back_offset
@@ -123,19 +138,20 @@ class RecurrentModel(DataProcess):
     gc.collect()
 
   def input_model(self):
-    '''Numerical columns'''
+    """Create input models for features containing numeric values"""
     in_num_features     = len(self._ts_num_idxes)
     in_b_dim            = self._in_back_offset//self._in_step
     self._model = Input(shape=(in_b_dim, in_num_features, ), name ="n_input")
   
 
   def merge_model(self):
-    '''Numerical columns'''
+    """Create input models for after merging features numeric and others """
+
     in_num_features = len(self._ts_num_idxes)
     in_b_dim        = self._in_back_offset//self._in_step
     self._oj_num_input    = Input(shape=(in_b_dim, in_num_features, ), name ="n_input")
   
-    '''categorical columns'''
+    """categorical columns"""
     in_str_features         = self._ts_str_idxes
     self._st_input_dim      = [2020, 13, 32, 1500] #time, year, month, day 
     self._st_output_dim     = [4, 4, 5, 20] #time, year, month, day 
@@ -156,6 +172,8 @@ class RecurrentModel(DataProcess):
     self._model = concatenate([self._oj_num_input, self._st_merged_em_model])
 
   def dump_history(self, ma_history_log, st_out_fname):
+    """ Save metrices for further analysis"""
+
     with open(st_out_fname, "w") as oj_written:
       # write column name - epoch,key1,key2 
       ts_val_losses = ma_history_log['val_loss'] 
@@ -168,6 +186,8 @@ class RecurrentModel(DataProcess):
         in_epoch += 1
 
   def fit_model_generator(self, out_ftag="GRU"):
+    """ model generator using features with numeric values """
+
     in_num_sample   = self._ar_values.shape[0] 
     in_lbound       = 0 
     in_ubound       = int(self._fo_train_ratio * in_num_sample) 
@@ -197,6 +217,8 @@ class RecurrentModel(DataProcess):
     print(f"{self._fmodel.metrics_names[1]:20s}:{oj_predict[1]:0.2f}")
 
   def fit_model_generator_merge_model(self, out_ftag="GRU"):
+    """ model generator using features with all features"""
+
     in_num_sample   = self._ar_values.shape[0] 
     in_lbound       = 0 
     in_ubound       = int(self._fo_train_ratio * in_num_sample) 
@@ -230,22 +252,28 @@ class GruRnn(RecurrentModel):
   def __init__(self, fo_train_ratio, fo_valid_ratio, fo_test_ratio, 
                 in_back_offset=2016, in_forward_offset=72, in_step=6, 
                 in_batch_size=128):
+    """ Specific to GRU""" 
+
     super().__init__(fo_train_ratio, fo_valid_ratio, fo_test_ratio, 
                      in_back_offset, in_forward_offset, in_step, in_batch_size)
 
   def keras_gru(self):
+    """ GRU architecture """
+
     oj_gru_model    =   GRU(18, activation='sigmoid', return_sequences=True, dropout=0.03, recurrent_dropout=0.03)(self._model)
     oj_gru_model_01 =   GRU(9, activation='sigmoid')(oj_gru_model)
     oj_dense_model  =   Dense(1)(oj_gru_model_01)
-    self._fmodel     = Model(self._model, oj_dense_model)
+    self._fmodel    =   Model(self._model, oj_dense_model)
     self._fmodel.summary()
     self._fmodel.compile(optimizer=optimizers.RMSprop(), loss='mean_squared_error', metrics=['mse'])
 
   def keras_gru_merge_model(self):
-    oj_gru_model	=   GRU(18, activation='sigmoid', return_sequences=True, dropout=0.03, recurrent_dropout=0.03)(self._model)
+    """ GRU architecture """
+
+    oj_gru_model    =   GRU(18, activation='sigmoid', return_sequences=True, dropout=0.03, recurrent_dropout=0.03)(self._model)
     oj_gru_model_01 =   GRU(9, activation='sigmoid')(oj_gru_model)
     oj_dense_model  =   Dense(1)(oj_gru_model_01)
-    self._fmodel       = Model([self._oj_num_input] + self._ts_st_inputs, oj_dense_model)
+    self._fmodel    =   Model([self._oj_num_input] + self._ts_st_inputs, oj_dense_model)
     self._fmodel.summary()
     self._fmodel.compile(optimizer=optimizers.RMSprop(), loss='mean_squared_error', metrics=['mse'])
 
@@ -254,9 +282,13 @@ class LSTMRnn(RecurrentModel):
   def __init__(self, fo_train_ratio, fo_valid_ratio, fo_test_ratio, 
                 in_back_offset=2016, in_forward_offset=72, in_step=6, 
                 in_batch_size=128):
+    """ Specific to GRU""" 
+
     super().__init__(fo_train_ratio, fo_valid_ratio, fo_test_ratio, 
                      in_back_offset, in_forward_offset, in_step, in_batch_size)
   def keras_lstm(self):
+    """ LSTM architecture """
+    
     oj_lstm_model_01 = LSTM(18, activation='sigmoid', return_sequences=True, dropout=0.03, recurrent_dropout=0.03)(self._model)
     oj_lstm_model    = LSTM(8, activation='sigmoid')(self._model)
     oj_dense_model   = Dense(1)(oj_lstm_model)
@@ -265,6 +297,8 @@ class LSTMRnn(RecurrentModel):
     self._fmodel.compile(optimizer=optimizers.RMSprop(), loss='mean_squared_error', metrics=['mse'])
 
   def keras_lstm_merge_model(self, stack=False):
+    """ LSTM architecture """
+
     oj_lstm_model_01 =   LSTM(18, activation='sigmoid', return_sequences=True, dropout=0.03, recurrent_dropout=0.03)(self._model)
     oj_lstm_model    =   LSTM(8, activation='sigmoid')(oj_lstm_model_01)
     oj_dense_model   =   Dense(1 )(oj_lstm_model)
