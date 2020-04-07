@@ -97,14 +97,6 @@ class RecurrentModel(DataProcess):
                 ]
                 in_j += 1
             in_idx += in_num_rows
-
-            """ for debugging
-      print("DEBUG: ar_X_f  ", valid, ar_X_f[0:2, 2:4,:])
-      print("DEBUG: ar_X min ", ar_X_f.min())
-      print("DEBUG: ar_X max ", ar_X_f.max())
-      print("DEBUG: ar_Y min ", ar_Y.min())
-      print("DEBUG: ar_Y max ", ar_Y.max())
-      """
             yield ar_X_f, ar_Y
 
     def fit_standard_scalar(self):
