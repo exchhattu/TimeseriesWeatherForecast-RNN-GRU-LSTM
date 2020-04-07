@@ -1,9 +1,9 @@
 
-import sys, argparse
+import argparse
+import sys
 
-from Features import DataProcess 
-from RNNmodel import RecurrentModel, GruRnn, LSTMRnn 
-
+from Features import DataProcess
+from RNNmodel import GruRnn, LSTMRnn, RecurrentModel
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(prog='LSTM.py', description='LSTM model')
