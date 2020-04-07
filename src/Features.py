@@ -292,17 +292,17 @@ class DataProcess:
         print("INFO: # of integer cols: {}".format(len(self._ts_num_idxes)))
 
     def identify_outlier(self, sigma=3.0):
+        """ Outlier detection using basic approach 
+
+            1. Identify the outlier of each feature with numeric value 
+            2. Three std from mean is considered as outlier since the random 
+                variables follow normal distribution. Can be utilized other techniques
+                such IQR and clustering.
+            3. Update the outlier values with respective mean observed from training 
+                dataset
+        Args:
+            sigma: standard deviation used for detecting outlier. Defaults to 3.0.
         """
-    Aims: 
-     - identify the outlier of each feature with numeric value 
-     - three std from mean is considered as outlier since the random 
-       variables follow normal distribution. Can be utilized other techniques
-       such IQR and clustering.
-     - update the outlier values with respective mean observed from training 
-       dataset
-    Parameters:
-      sigma: number of sigma for outlier
-    """
 
         in_num_sample = self._ar_values.shape[0]
         in_ubound = int(self._fo_train_ratio * in_num_sample)
@@ -312,7 +312,6 @@ class DataProcess:
         for idx in self._ts_num_idxes:
             fo_mean = self._ar_values[:in_ubound, idx].mean(axis=0)
             fo_std = self._ar_values[:in_ubound, idx].std(axis=0)
-            # idx+1 is for excluding date time column
             print(
                 "INFO: feature: {0:s} mean: {1:.2f} std: {2:.2f}".format(
                     self._ts_columns[idx + 1], fo_mean, fo_std
@@ -347,14 +346,10 @@ class DataProcess:
         print("---")
 
     def fit_transform_standard_scaler(self):
+        """ Standarize using training dataset and transform entire 
+            dataset using mean and standard deviation observed from 
+            training dataset. It is only applied to columns with numerical values.
         """
-    Aims: 
-          Standarize using training dataset and transform entire 
-          dataset using mean and standard deviation observed from 
-          training dataset. 
-          
-          It is only applied to columns with numerical values.
-    """
 
         in_num_sample = self._ar_values.shape[0]
         in_ubound = int(self._fo_train_ratio * in_num_sample)
