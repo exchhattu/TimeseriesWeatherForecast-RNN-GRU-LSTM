@@ -110,17 +110,15 @@ class DataProcess:
         return pd.Series([fo_x, fo_y])
 
     def encode_month(self, st_row):
+        """ Encode the month into four different categories based on season
+        
+        Args:
+            st_row: index to represent between 1 to 12 and it raises an error 
+                    for outside index
+        
+        Returns:
+            int: either 1, 2, 3, ro 4 
         """
-    Encode the month into four different categories based on season
-    
-    Arguments:
-        st_row -- month index between 1 to 12 and it raises an error 
-                  for outside index
-    
-    Returns:
-        int -- either 1, 2, 3, or 4 
-    """
-
         if st_row < 1 or st_row > 12:
             raise ValueError("Invalid argument")
 
@@ -134,15 +132,15 @@ class DataProcess:
             return 4
 
     def encode_hours(self, st_row):
+        """ Convert 24 hours into six groups 
+        
+        Args:
+            st_row: index for each hours between 1 to 24 
+        
+        Returns:
+            int: index between 1 to 6 
+            [type]: [description]
         """
-    Convert 24 hours into six groups 
-    
-    Arguments:
-        st_row -- index for each hours between 1 to 24 
-    
-    Returns:
-        int -- index between 1 to 6 
-    """
 
         st_row = int(self.convert_time_to_hours(st_row))
         if st_row < 1 or st_row > 24:
@@ -162,12 +160,16 @@ class DataProcess:
             return 6
 
     def parse_excluded_columns(self, st_column_idxes):
-        """ 
-        Aims: 
-            Parsing the column indexes that should be excluded.
-        Params:
-            st_column_idxes: formats can be 1,2,3 or 1,2-5, or 2-5
-    """
+        """ Parsing the columns indexes that need to exclude
+        
+        Args:
+            st_column_idxes: column index.
+                             Supported format: 1,2,3 or 1,2-5, or 2-5 
+        
+        Returns:
+            list: filtered list after removing column index 
+        """
+
         ts_col_idxes = []
         ts_comma = st_column_idxes.split(",")
         for st_comma in ts_comma:
@@ -186,16 +188,18 @@ class DataProcess:
         exclude_column_idxes=None,
         exclude_columns=None,
     ):
+        """ Read CSV file
+            Encode year, month, day, and time
+            Divide columns into numeric and string based on their content 
+        
+        Args:
+            st_path: path to input file 
+            use_embedded_date: use embedded date in model building dataset. Defaults to False.
+            use_date: use date in the model building dateset. Defaults to False.
+            exclude_column_idxes: List of columns for exclusion. Defaults to None.
+            exclude_columns: List of column names for exclusion. Defaults to None.
         """
-    Aims: 
-      * read CSV file
-      * encode year, month, day, and time
-      * divide columns into numeric and string based on their content 
 
-    Parameters:
-      * st_path: path to input file
-      * convert: convert month, day, and time into floating point numeric values 
-    """
         print("INFO: reading {}...".format(st_path))
         self._df_data = pd.read_csv(st_path)
         self._df_data["Date Time"] = pd.to_datetime(
@@ -214,7 +218,7 @@ class DataProcess:
                 + self._df_data["Date Time"].dt.second / 3600.00
             )
 
-            # # Convert time, month, and day into numeric value
+            # Convert time, month, and day into numeric value
             self._df_data[["Tx", "Ty"]] = (
                 self._df_data["Date Time"]
                 .dt.time.astype(str)
@@ -230,9 +234,9 @@ class DataProcess:
                 .dt.date.astype(str)
                 .apply(lambda row: self.get_day_xy(row, 372.0))
             )
-            print("INFO: encoded!!!")
+            print("INFO: feature with string type is encoded!!!")
 
-        if use_embedded_date:  # donot modify but just split
+        if use_embedded_date:  # do not modify but just split
             # Extracting year, month, day and hour
             self._df_data["Year"] = self._df_data["Date Time"].dt.year
             self._df_data["Month"] = self._df_data["Date Time"].dt.month
@@ -249,16 +253,13 @@ class DataProcess:
             ts_str_col_names = ["Year", "Month", "Day", "Time"]
 
         print("INFO: finished reading!!!")
-        print(self._df_data.info())
-        print(self._df_data.head())
-        print(self._df_data.tail())
 
         if exclude_column_idxes:
             self._df_data_copy = self._df_data.copy()
             ts_excluded_cols_idxes = self.parse_excluded_columns(exclude_column_idxes)
             ts_cols = np.array(self._df_data.columns)
             ts_excluded_cols = ts_cols[ts_excluded_cols_idxes]
-            # self._df_data.drop(ts_excluded_cols, axis=1, inplace=True)
+
         if exclude_columns:
             self._df_data_copy = self._df_data.copy()
             ts_excluded_cols = exclude_columns.split(",")
@@ -279,7 +280,7 @@ class DataProcess:
         self._ts_str_idxes -= 1
         self._ts_num_idxes -= 1
 
-        # target column
+        # select target column that contains ground truth
         self._in_target_idx = self._ts_columns.index("T (degC)") - 1
         print("INFO: index of target column (T degC): %d" % (self._in_target_idx))
 
