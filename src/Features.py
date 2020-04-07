@@ -24,7 +24,7 @@ class DataProcess:
         """Convert given time into minute
         
         Args:
-            st_row: input a time in a format hour:minute 
+            st_row: input a time in hour:minute format 
         
         Returns:
             int: return minutes 
@@ -33,32 +33,30 @@ class DataProcess:
         return int(ar_hr_mi_se[0]) * 60 + int(ar_hr_mi_se[1])
 
     def convert_time_to_hours(self, st_row):
+        """ Convert time into hour
+        
+        Args:
+            st_row: input a time in a format hour:minute 
+        
+        Returns:
+            int: return hours ignores decimal 
         """
-    Convert time into hour
-    
-    Arguments:
-        st_row -- input a time in a format hour:minute 
-    
-    Returns:
-        int -- return hours ignores decimal 
-    """
+
         ar_hr_mi_se = st_row.split(":")
         return int(ar_hr_mi_se[0]) + int(ar_hr_mi_se[1]) / 60.0
 
     def get_xy(self, st_row, fo_max_value=360.0):
+        """ Convert time into polar coordinate system. This converts 12pm at midnight 
+            and 1am in the morning are close to each other. 
+        
+        Args:
+            st_row: input a time in a format hour:minute 
+            fo_max_value: Defaults to 360.0. 
+        
+        Returns:
+            pandas series: pair of values - x and y 
         """
-    Convert time into polar coordinate system. This converts 12pm at midnight 
-    and 1am in the morning are close to each other. 
-    
-    Arguments:
-        st_row -- input a time in a format hour:minute 
-    
-    Keyword Arguments:
-        fo_max_value -- max value (default: {360.0})
-    
-    Returns:
-        pandas series -- pair of values - x and y 
-    """
+
         ar_hr_mi_se = st_row.split(":")
         fo_hrs = (float(ar_hr_mi_se[0]) * 60.0 + float(ar_hr_mi_se[1])) / fo_max_value
         fo_r = fo_max_value / (2.0 * np.pi)
@@ -67,19 +65,16 @@ class DataProcess:
         return pd.Series([fo_x, fo_y])
 
     def get_month_xy(self, st_row, fo_max_value=12.0):
+        """ This coversion makes january and december are consecutive.
+            Therefore, forecasting for these months are very similar.
+        
+        Args:
+            st_row: input a time in hour:minute format 
+            fo_max_value: max value, Defaults to 12.0.
+
+        Returns:
+            pandas series: pair of values - x and y 
         """
-    This coversion makes january and december are consecutive.
-    Therefore, forecasting for these months are very similar.
-    
-    Arguments:
-        st_row -- input a time in a format hour:minute 
-    
-    Keyword Arguments:
-        fo_max_value -- max value (default: {360.0})
-    
-    Returns:
-        pandas series -- pair of values - x and y 
-    """
 
         fo_month = float(st_row) / fo_max_value
         fo_r = fo_max_value / (2.0 * np.pi)
@@ -88,19 +83,20 @@ class DataProcess:
         return pd.Series([fo_x, fo_y])
 
     def get_day_xy(self, st_row, fo_max_value=365.0):
-        """ 
-    Convert 365 days/year to x, y coordinates and 
-    31 days/month is rough approximation 
-    
-    Arguments:
-        st_row {[type]} -- [description]
-    
-    Keyword Arguments:
-        fo_max_value -- upper bound (default: {360.0})
-    
-    Returns:
-        pandas series -- series with two elements in a list 
-    """
+        """ Convert 365 days/year to x, y coordinates and 
+            31 days/month is rough approximation 
+        
+        Args:
+            st_row: date in format dd-mo-yy 
+            fo_max_value: upper bound. Defaults to 365.0.
+        
+        Raises:
+            ValueError: [description]
+            ValueError: [description]
+        
+        Returns:
+            pandas series: two elements in a list
+        """
 
         # format dd-mo-yy
         ar_dd_mo_yy = st_row.split("-")
